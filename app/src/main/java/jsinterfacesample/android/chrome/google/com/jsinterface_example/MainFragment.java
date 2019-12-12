@@ -61,6 +61,9 @@ public class MainFragment extends Fragment {
         mWebView.addJavascriptInterface(
                 new NotificationBindObject(getActivity().getApplicationContext()),
                 "NotificationBind");
+        mWebView.addJavascriptInterface(
+                new CardReaderBindObject(getActivity().getApplicationContext()),
+                "CardReaderBind");
 
         setUpWebViewDefaults(mWebView);
 

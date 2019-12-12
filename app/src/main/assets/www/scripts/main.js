@@ -178,8 +178,8 @@ window.onload = function() {
     console.log('window.onload');
     var showNotificationBtn = document.querySelector('#show-notification-btn');
     showNotificationBtn.addEventListener('click', function() {
-        if(window.NotificationBind) {
-            NotificationBind.showNotification('This is an Awesome notification');
+        if(window.CardReaderBind) {
+            CardReaderBind.getBatteryLevel();
         }
 
         changeState(NOTIFICATION_SHOWN, true);

@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
 import android.util.Log;
+import android.webkit.JavascriptInterface;
 
 import com.magtek.mobile.android.mtlib.MTSCRA;
 import com.magtek.mobile.android.mtlib.MTSCRAEvent;
@@ -48,5 +49,11 @@ public class CardReaderBindObject {
 
     protected void OnDeviceResponse(String data) {
         Log.i(TAG, data);
+    }
+
+    @JavascriptInterface
+    public void getBatteryLevel() {
+        long batteryLevel = mtscra.getBatteryLevel();
+        Log.i(TAG, "Battery level is: " +batteryLevel);
     }
 }
