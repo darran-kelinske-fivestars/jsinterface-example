@@ -51,6 +51,9 @@ public class CardReaderBindObject {
 
     public CardReaderBindObject(Context context) {
         this.context = context;
+        mtscra = new MTSCRA(context, scraHandler);
+        mtscra.setConnectionType(MTConnectionType.USB);
+        mtscra.openDevice();
     }
 
     protected void OnDeviceResponse(String data) {
@@ -59,51 +62,8 @@ public class CardReaderBindObject {
 
     @JavascriptInterface
     public void getBatteryLevel() {
-        mtscra = new MTSCRA(context, scraHandler);
-        mtscra.setConnectionType(MTConnectionType.USB);
-        mtscra.openDevice();
         long batteryLevel = mtscra.getBatteryLevel();
         Log.i(TAG, "Battery level is: " +batteryLevel);
-    }
-
-    private ArrayList<String> getUsbDeviceSelections() {
-        ArrayList<String> selectionList = new ArrayList<String>();
-
-        UsbManager usbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
-
-        if (usbManager != null)
-        {
-            HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
-
-            Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
-
-            while (deviceIterator.hasNext())
-            {
-                UsbDevice device = deviceIterator.next();
-
-                if (device != null)
-                {
-                    if (device.getVendorId() == 0x0801)
-                    {
-                        String name = device.getDeviceName();
-
-                        if (android.os.Build.VERSION.SDK_INT >= 21)
-                        {
-                            String dsn = device.getSerialNumber();
-
-                            if ((dsn != null) && !dsn.isEmpty())
-                            {
-                                name = dsn;
-                            }
-                        }
-
-                        selectionList.add(name);
-                    }
-                }
-            }
-        }
-
-        return selectionList;
     }
 
 }
