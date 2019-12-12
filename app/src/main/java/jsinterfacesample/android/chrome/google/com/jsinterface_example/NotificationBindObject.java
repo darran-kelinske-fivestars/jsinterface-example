@@ -15,12 +15,13 @@
  */
 package jsinterfacesample.android.chrome.google.com.jsinterface_example;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.TaskStackBuilder;
 import android.webkit.JavascriptInterface;
 
 public class NotificationBindObject {
@@ -43,8 +44,18 @@ public class NotificationBindObject {
      */
     @JavascriptInterface
     public void showNotification(String message) {
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        String id = "my_channel_01";
+        int importance = NotificationManager.IMPORTANCE_LOW;
+        NotificationChannel mChannel = new NotificationChannel(id, "asdf",importance);
+        mChannel.enableLights(true);
+        mNotificationManager.createNotificationChannel(mChannel);
+
         NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(mContext)
+                new NotificationCompat.Builder(mContext, id)
                         .setSmallIcon(R.drawable.notification_icon)
                         .setContentTitle(mContext.getString(R.string.notification_title))
                         .setContentText(message)
@@ -69,8 +80,7 @@ public class NotificationBindObject {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
         mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
         // mId allows you to update the notification later on.
         mNotificationManager.notify(-1, mBuilder.build());
     }
