@@ -2,7 +2,6 @@ package jsinterfacesample.android.chrome.google.com.jsinterface_example;
 
 import android.annotation.TargetApi;
 import android.app.Fragment;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -26,7 +24,7 @@ public class WebViewFragment extends Fragment {
 
     public static final String EXTRA_FROM_NOTIFICATION = "EXTRA_FROM_NOTIFICATION";
 
-    private WebView mWebView;
+    private WebView webView;
 
     public WebViewFragment() {
     }
@@ -37,27 +35,15 @@ public class WebViewFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Get reference of WebView from layout/activity_main.xml
-        mWebView = (WebView) rootView.findViewById(R.id.fragment_main_webview);
+        webView = (WebView) rootView.findViewById(R.id.fragment_main_webview);
 
-        // Add Javascript Interface, this will expose "window.NotificationBind"
-        // in Javascript
-        mWebView.addJavascriptInterface(
-                new CardReaderBindObject(getActivity().getApplicationContext()),
-                "CardReaderBind");
+        WebSettings settings = webView.getSettings();
 
-        // Check whether we're recreating a previously destroyed instance
-        if (savedInstanceState != null) {
-            // Restore the previous URL and history stack
-            mWebView.restoreState(savedInstanceState);
-        }
+        // Enable Javascript
+        settings.setJavaScriptEnabled(true);
 
-        String url = mWebView.getUrl();
-
-        // Load the local index.html file
-        if(mWebView.getUrl() == null) {
-            mWebView.loadUrl(url);
-        }
-
+        webView.loadUrl("file:///android_asset/www/index.html");
+        preventBGColorFlicker();
         return rootView;
     }
 
@@ -67,9 +53,10 @@ public class WebViewFragment extends Fragment {
      *
      * @param bgColor
      */
-    private void preventBGColorFlicker(int bgColor) {
+    private void preventBGColorFlicker() {
+        int bgColor = Color.parseColor("#1abc9c");
         ((ViewGroup) getActivity().findViewById(R.id.activity_main_container)).setBackgroundColor(bgColor);
-        mWebView.setBackgroundColor(bgColor);
+        webView.setBackgroundColor(bgColor);
     }
 
     /**
@@ -90,7 +77,7 @@ public class WebViewFragment extends Fragment {
     public void loadJavascript(String javascript) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             // In KitKat+ you should use the evaluateJavascript method
-            mWebView.evaluateJavascript(javascript, new ValueCallback<String>() {
+            webView.evaluateJavascript(javascript, new ValueCallback<String>() {
                 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
                 @Override
                 public void onReceiveValue(String s) {
@@ -126,16 +113,16 @@ public class WebViewFragment extends Fragment {
              * To then call back to Java you would need to use addJavascriptInterface()
              * and have your JS call the interface
              **/
-            mWebView.loadUrl("javascript:"+javascript);
+            webView.loadUrl("javascript:"+javascript);
         }
     }
 
     public boolean goBack() {
-        if(!mWebView.canGoBack()) {
+        if(!webView.canGoBack()) {
             return false;
         }
 
-        mWebView.goBack();
+        webView.goBack();
         return true;
     }
 }

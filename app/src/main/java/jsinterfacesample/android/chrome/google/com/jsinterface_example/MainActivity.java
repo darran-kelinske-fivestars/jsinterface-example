@@ -45,7 +45,12 @@ public class MainActivity extends Activity {
         }
         UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
 
-        usbManager.requestPermission(getUsbDeviceSelections().get(0), PendingIntent.getBroadcast(this, 0, new Intent("7"), 0));
+        if (usbManager != null) {
+            if (getUsbDeviceSelections().isEmpty()) {
+                return;
+            }
+            usbManager.requestPermission(getUsbDeviceSelections().get(0), PendingIntent.getBroadcast(this, 0, new Intent("7"), 0));
+        }
     }
 
 
