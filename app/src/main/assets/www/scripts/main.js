@@ -161,6 +161,11 @@ function pushState(state, title, path) {
     window.location.hash = path;
 }
 
+  function parse(json) {
+    var result=JSON.parse(json);
+
+  }
+
 window.onpopstate = function(event) {
     console.log('onpopstate()');
     var popped = document.querySelector('.current-page') ? true : false;
@@ -186,4 +191,14 @@ window.onload = function() {
     });
 
     updateUI(true);
+
+    onmessage = function (e) {
+    console.log("registering message handler.");
+                   port = e.ports[0];
+
+                   port.onmessage = function (f) {
+                     console.log(f.data);
+                   }
+                 }
+
 };

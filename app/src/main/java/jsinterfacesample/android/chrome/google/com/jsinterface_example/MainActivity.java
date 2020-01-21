@@ -62,21 +62,6 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * If the help menu option is selected, show a new
-     * screen in the WebView
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_help:
-                mWebViewFragment.loadJavascript("showSecretMessage();");
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    /**
      * Go back through the WebView back stack before
      * exiting the app
      */
