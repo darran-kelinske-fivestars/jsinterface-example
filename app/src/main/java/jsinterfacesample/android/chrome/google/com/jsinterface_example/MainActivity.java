@@ -16,7 +16,6 @@
 package jsinterfacesample.android.chrome.google.com.jsinterface_example;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -32,16 +31,16 @@ import java.util.Iterator;
 
 public class MainActivity extends Activity {
 
-    private MainFragment mMainFragment;
+    private WebViewFragment mWebViewFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
-            mMainFragment = new MainFragment();
+            mWebViewFragment = new WebViewFragment();
             getFragmentManager().beginTransaction()
-                    .add(R.id.activity_main_container, mMainFragment)
+                    .add(R.id.activity_main_container, mWebViewFragment)
                     .commit();
         }
         UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
@@ -65,7 +64,7 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_help:
-                mMainFragment.loadJavascript("showSecretMessage();");
+                mWebViewFragment.loadJavascript("showSecretMessage();");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -78,7 +77,7 @@ public class MainActivity extends Activity {
      */
     @Override
     public void onBackPressed() {
-        if(!mMainFragment.goBack()) {
+        if(!mWebViewFragment.goBack()) {
             super.onBackPressed();
         }
     }

@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2010 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package jsinterfacesample.android.chrome.google.com.jsinterface_example;
 
 import android.annotation.TargetApi;
@@ -36,16 +21,14 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.io.StringReader;
 
-/**
- * Created by mattgaunt on 10/16/14.
- */
-public class MainFragment extends Fragment {
+
+public class WebViewFragment extends Fragment {
 
     public static final String EXTRA_FROM_NOTIFICATION = "EXTRA_FROM_NOTIFICATION";
 
     private WebView mWebView;
 
-    public MainFragment() {
+    public WebViewFragment() {
     }
 
     @Override
@@ -62,16 +45,13 @@ public class MainFragment extends Fragment {
                 new CardReaderBindObject(getActivity().getApplicationContext()),
                 "CardReaderBind");
 
-        setUpWebViewDefaults(mWebView);
-
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {
             // Restore the previous URL and history stack
             mWebView.restoreState(savedInstanceState);
         }
 
-        // Prepare the WebView and get the appropriate URL
-        String url = prepareWebView(mWebView.getUrl());
+        String url = mWebView.getUrl();
 
         // Load the local index.html file
         if(mWebView.getUrl() == null) {
@@ -79,76 +59,6 @@ public class MainFragment extends Fragment {
         }
 
         return rootView;
-    }
-
-    /**
-     * Convenience method to set some generic defaults for a
-     * given WebView
-     *
-     * @param webView
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void setUpWebViewDefaults(WebView webView) {
-        WebSettings settings = webView.getSettings();
-
-        // Enable Javascript
-        settings.setJavaScriptEnabled(true);
-
-        // Use WideViewport and Zoom out if there is no viewport defined
-        settings.setUseWideViewPort(true);
-        settings.setLoadWithOverviewMode(true);
-
-        // Enable pinch to zoom without the zoom buttons
-        settings.setBuiltInZoomControls(true);
-
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
-            // Hide the zoom controls for HONEYCOMB+
-            settings.setDisplayZoomControls(false);
-        }
-
-        // Enable remote debugging via chrome://inspect
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            WebView.setWebContentsDebuggingEnabled(true);
-        }
-    }
-
-    /**
-     * This is method where specific logic for this application is going to live
-     * @return url to load
-     */
-    private String prepareWebView(String currentUrl) {
-        String hash = "";
-        int bgColor;
-
-        if(currentUrl != null) {
-            String[] hashSplit = currentUrl.split("#");
-            if(hashSplit.length == 2) {
-                hash = hashSplit[1];
-            }
-        } else {
-            Intent intent = getActivity().getIntent();
-            if(intent != null && intent.getBooleanExtra(EXTRA_FROM_NOTIFICATION, false)) {
-                hash = "notification-launch";
-            }
-        }
-
-        if(hash.equals("notification-launch")) {
-            bgColor = Color.parseColor("#1abc9c");
-        } else if(hash.equals("notification-shown")) {
-            bgColor = Color.parseColor("#3498db");
-        } else if(hash.equals("secret")) {
-            bgColor = Color.parseColor("#34495e");
-        } else {
-            bgColor = Color.parseColor("#f1c40f");
-        }
-
-        preventBGColorFlicker(bgColor);
-
-        // We set the WebViewClient to ensure links are consumed by the WebView rather
-        // than passed to a browser if it can
-        mWebView.setWebViewClient(new WebViewClient());
-
-        return "file:///android_asset/www/index.html#"+hash;
     }
 
     /**
